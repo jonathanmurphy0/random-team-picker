@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Password Strength Checker</title>
+<style>
+body{font-family:Arial;background:#0f172a;color:white;padding:25px}
+main{max-width:500px;margin:40px auto;background:#1e293b;padding:30px;border-radius:16px}
+input[type=password],input[type=text]{width:100%;padding:14px;box-sizing:border-box;margin:15px 0;border:0;border-radius:8px}
+progress{width:100%;height:22px;accent-color:#38bdf8}
+li{padding:8px}
+#status{font-size:24px;font-weight:bold}
+</style>
+</head>
+<body>
+<main>
+<h1>Password Strength Checker</h1>
+<p>Review basic password characteristics locally.</p>
+<input id="password" type="password" placeholder="Enter a sample password" oninput="check()" autocomplete="off">
+<label><input type="checkbox" onchange="toggle(this)"> Show Password</label>
+<h2 id="status">Enter a password</h2>
+<progress id="progress" max="5" value="0"></progress>
+<ul id="requirements"></ul>
+<p>This is a basic checklist, not a guarantee of password security. Use a sample password rather than an existing account password.</p>
+</main>
+<script>
+function toggle(box){
+ document.getElementById("password").type=box.checked?"text":"password";
+}
+function check(){
+ const password=document.getElementById("password").value;
+ const rules=[
+ ["At least 15 characters",password.length>=15],
+ ["Uppercase letters",/[A-Z]/.test(password)],
+ ["Lowercase letters",/[a-z]/.test(password)],
+ ["Numbers",/[0-9]/.test(password)],
+ ["Special characters",/[^A-Za-z0-9\s]/.test(password)]
+ ];
+ const score=rules.filter(rule=>rule[1]).length;
+ const list=document.getElementById("requirements");
+ list.innerHTML="";
+ rules.forEach(rule=>{
+  const li=document.createElement("li");
+  li.textContent=(rule[1]?"✓ ":"○ ")+rule[0];
+  li.style.color=rule[1]?"#86efac":"#cbd5e1";
+  list.appendChild(li);
+ });
+ document.getElementById("progress").value=score;
+ document.getElementById("status").textContent=
+ password?score+" of 5 checks passed":"Enter a password";
+}
+check();
+</script>
+</body>
+</html>
